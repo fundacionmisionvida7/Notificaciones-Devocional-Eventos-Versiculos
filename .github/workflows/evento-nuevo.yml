@@ -1,0 +1,28 @@
+name: Evento Nuevo
+
+on:
+  schedule:
+    - cron: '0 20 * * *'  # Todos los días a las 17:00 Córdoba
+  workflow_dispatch:
+
+jobs:
+  evento:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obtener último evento de Firebase Storage
+        id: evento
+        run: |
+          FILES=$(curl -s 'https://firebasestorage.googleapis.com/v0/b/mision-vida-app.appspot.com/o?prefix=eventos/EventosNuevos&alt=json')
+          LAST=$(echo "$FILES" | jq -r '.items[-1].name')
+          TITLE=$(basename "$LAST" | sed -E 's/\.[a-zA-Z0-9]+$//' | sed 's/%20/ /g')
+          echo "title=$TITLE" >> $GITHUB_OUTPUT
+
+      - name: Enviar notificación del evento
+        run: |
+          curl -X POST https://fundacionmisionvida7.vercel.app/api/send-notification \
+            -H "Content-Type: application/json" \
+            -d '{
+              "title": "¡Nuevo evento! ${{ steps.evento.outputs.title }}",
+              "body": "¡Ya está disponible el nuevo evento para ver!",
+              "url": "/eventos"
+            }'

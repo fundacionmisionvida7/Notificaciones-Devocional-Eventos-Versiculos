@@ -1,0 +1,19 @@
+name: Enviar Palabra del Día
+
+on:
+  schedule:
+    - cron: '0 7 * * *'  # Todos los días a las 15:00 UTC → 12:00 Argentina
+  workflow_dispatch:
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enviar notificación diaria
+        run: |
+          curl -X POST https://nuevo-palabra-del-dia-backend.vercel.app/api/send-notification \
+            -H "Content-Type: application/json" \
+            -d '{
+              "title": "📖 Palabra del Día",
+              "body":  "¡Tu devocional de hoy ya está disponible!"
+            }'

@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Enviar notificación diaria
         run: |
-          curl -X POST https://nuevo-palabra-del-dia-backend.vercel.app/api/send-notification \
+          curl -X POST https://nuevo-palabra-del-dia-backend.vercel.app/api/send-notification\
             -H "Content-Type: application/json" \
             -d '{
               "title": "📖 Palabra del Día",

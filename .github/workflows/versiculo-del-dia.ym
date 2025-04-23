@@ -1,0 +1,20 @@
+name: Versículo del Día
+
+on:
+  schedule:
+    - cron: '0 7 * * *'  # 11:00 Argentina
+  workflow_dispatch:
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enviar versículo del día
+        run: |
+          curl -X POST https://fundacionmisionvida7.vercel.app/api/send-notification \
+            -H "Content-Type: application/json" \
+            -d '{
+              "title": "¡Nuevo versículo del día!",
+              "body": "No te lo pierdas, ya está disponible",
+              "url": "/versiculo"
+            }'
